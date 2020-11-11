@@ -1,6 +1,66 @@
 import { Box, Button, Icon, Menu, MenuButton, MenuItem, MenuList, Stack, Text, Grid, Image } from '@chakra-ui/core'
 import Head from 'next/head'
 import { AiOutlineShopping } from 'react-icons/ai'
+import { FiRefreshCw, FiLock, FiUmbrella } from 'react-icons/fi'
+
+export default function Home(): JSX.Element {
+  return (
+    <Stack spacing="0" color="gray.800" fontFamily="Inter">
+      <Head>
+        <title>Nextjs ecommerce demo</title>
+        <link rel="icon" href="/favicon.ico" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap"
+          rel="stylesheet"
+        />
+      </Head>
+      <Stack spacing="0" width="full" height="100vh">
+        <Navigation />
+        <Hero />
+      </Stack>
+      <Stack as="main" spacing="0" flex="1" flexDir="column" width="full">
+        <FeaturedProducts />
+        <Grid gridTemplateColumns="repeat(auto-fit, minmax(250px, 1fr))" gap="10" py="10">
+          <Box>
+            <Image rounded="sm" src="/shoes-1.jpg" height="500px" width="full" objectFit="cover" />
+          </Box>
+          <Box>
+            <Image rounded="sm" src="/bag-1.jpg" height="500px" width="full" objectFit="cover" />
+          </Box>
+          <Box>
+            <Image rounded="sm" src="/tops-1.jpg" height="500px" width="full" objectFit="cover" />
+          </Box>
+        </Grid>
+        <Stack height="300px" bg="gray.100">
+          <Container>
+            <Stack spacing={0} isInline width="full" fontSize="xl">
+              <Stack justifyContent="center" alignItems="center" rounded="md" height="300px" flex={1}>
+                <Icon as={FiRefreshCw} fontSize="32px" mb="4" />
+                <Text fontWeight="medium" letterSpacing="wider">
+                  Free Shipping and Returns
+                </Text>
+              </Stack>
+              <Stack justifyContent="center" alignItems="center" rounded="md" height="300px" flex={1}>
+                <Icon as={FiLock} fontSize="32px" mb="4" />
+                <Text fontWeight="medium" letterSpacing="wider">
+                  Secured Payments
+                </Text>
+              </Stack>
+              <Stack justifyContent="center" alignItems="center" rounded="md" height="300px" flex={1}>
+                <Icon as={FiUmbrella} fontSize="32px" mb="4" />
+                <Text fontWeight="medium" letterSpacing="wider">
+                  Customer Service
+                </Text>
+              </Stack>
+            </Stack>
+          </Container>
+        </Stack>
+      </Stack>
+      <Footer />
+    </Stack>
+  )
+}
 
 function Container({ children, ...rest }): JSX.Element {
   return (
@@ -45,7 +105,7 @@ function Hero(): JSX.Element {
           <Image
             mt="20"
             width="full"
-            height="calc(100vh - 5rem)"
+            height="calc(100vh - 7rem)"
             rounded="sm"
             src="https://static.wixstatic.com/media/9c608a_840cc8e97e8d4daf9451008b877d746b~mv2_d_5018_2563_s_4_2.jpg/v1/fill/w_3264,h_1718,al_c,q_90,usm_0.66_1.00_0.01/9c608a_840cc8e97e8d4daf9451008b877d746b~mv2_d_5018_2563_s_4_2.webp"
             objectFit="cover"
@@ -80,23 +140,30 @@ function Hero(): JSX.Element {
 }
 
 function FeaturedProducts(): JSX.Element {
-  const products = Array(4)
-    .fill(null)
-    .map((item, idx) => ({ id: idx, title: `title-${idx}` }))
+  const products = [
+    { id: 1, src: '/tops-3.jpg', title: 'top', price: '$129.99' },
+    { id: 2, src: '/shoes-3.jpg', title: 'shoes', price: '$100.00' },
+    { id: 3, src: '/bag-3.jpg', title: 'bag', price: '$69.99' },
+    { id: 3, src: '/shoes-2.jpg', title: 'shoes', price: '$149.99' },
+  ]
 
   return (
-    <Stack bg="gray.200" py="20" mb="40">
-      <Container>
+    <Stack bg="gray.200" py="20">
+      <Container px={[0, 4]}>
         <Box>
-          <Text textAlign="center" textTransform="uppercase" fontSize="xl">
-            fetured products
+          <Text textAlign="center" textTransform="uppercase" fontSize="xl" fontWeight="medium" letterSpacing="wider">
+            featured products
           </Text>
         </Box>
-        <Grid py="20" gridTemplateColumns="repeat(auto-fit, minmax(200px, 1fr))" gap="32">
-          {products.map((item) => (
-            <Box key={item.id} height="350px" bg="white">
-              <Text>{item.title}</Text>
-            </Box>
+        <Grid py="20" gridTemplateColumns="repeat(auto-fit, minmax(200px, 1fr))" gap={[10, 32]}>
+          {products.map(({ id, src, title, price }) => (
+            <Stack key={id} height="350px" bg="white" p="2" spacing={0}>
+              <Image rounded="sm" src={src} height="250px" width="full" objectFit="cover" />
+              <Stack flex="1" p="3" fontSize="lg" textTransform="capitalize">
+                <Text textAlign="center">{title}</Text>
+                <Text textAlign="center">{price}</Text>
+              </Stack>
+            </Stack>
           ))}
         </Grid>
         <Box textAlign="center">
@@ -122,49 +189,25 @@ function FeaturedProducts(): JSX.Element {
   )
 }
 
-export default function Home(): JSX.Element {
+function Footer() {
   return (
-    <Stack spacing="0" color="gray.800">
-      <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-      <Stack spacing="0" width="full" mb="40">
-        <Navigation />
-        <Hero />
-      </Stack>
-      <Stack as="main" spacing="0" flex="1" flexDir="column" width="full">
-        <FeaturedProducts />
-        <Stack isInline width="full" spacing="12" mb="40">
-          <Box flex={1}>
-            <Image rounded="sm" src="/shoes.jpg" height="500px" objectFit="cover" />
+    <Stack as="footer" py="20">
+      <Container>
+        <Stack>
+          <Box>
+            <Text>Home</Text>
           </Box>
-          <Box flex={1}>
-            <Image rounded="sm" src="/accesories.jpg" height="500px" objectFit="cover" />
+          <Box>
+            <Text>Shoes</Text>
           </Box>
-          <Box flex={1}>
-            <Image rounded="sm" src="/tops.jpg" height="500px" objectFit="cover" />
+          <Box>
+            <Text>Accesories</Text>
+          </Box>
+          <Box>
+            <Text>Tops</Text>
           </Box>
         </Stack>
-        <Stack height="300px" bg="gray.100">
-          <Container>
-            <Stack isInline width="full" fontSize="xl">
-              <Stack justifyContent="center" alignItems="center" rounded="md" height="300px" flex={1}>
-                <Text>Free Shipping and Returns</Text>
-              </Stack>
-              <Stack justifyContent="center" alignItems="center" rounded="md" height="300px" flex={1}>
-                <Text>Secured Payments</Text>
-              </Stack>
-              <Stack justifyContent="center" alignItems="center" rounded="md" height="300px" flex={1}>
-                <Text>Customer Service</Text>
-              </Stack>
-            </Stack>
-          </Container>
-        </Stack>
-      </Stack>
-      <Stack as="footer">
-        <Text>Footer</Text>
-      </Stack>
+      </Container>
     </Stack>
   )
 }
