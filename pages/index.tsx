@@ -3,22 +3,19 @@ import Head from 'next/head'
 import { AiOutlineShopping } from 'react-icons/ai'
 import { FiRefreshCw, FiLock, FiUmbrella } from 'react-icons/fi'
 
+const products = [{id:1, imageUrl:'https://preview.colorlib.com/theme/timezone/assets/img/hero/xwatch.png.pagespeed.ic.LlRtijfV2T.webp'}]
+
 export default function Home(): JSX.Element {
   return (
-    <Stack spacing="0" color="gray.800" fontFamily="Inter">
+    <Stack spacing="0" color="gray.800" fontFamily="Josefin Sans">
       <Head>
         <title>Nextjs ecommerce demo</title>
         <link rel="icon" href="/favicon.ico" />
         <link rel="preconnect" href="https://fonts.gstatic.com" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap"
-          rel="stylesheet"
-        />
+        <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet"/>
       </Head>
-      <Stack spacing="0" width="full" height="100vh">
-        <Navigation />
-        <Hero />
-      </Stack>
+      <Navigation />
+      <Hero />
       <Stack as="main" spacing="0" flex="1" flexDir="column" width="full">
         <FeaturedProducts />
         <Grid gridTemplateColumns="repeat(auto-fit, minmax(250px, 1fr))" gap="10" py="10">
@@ -79,6 +76,15 @@ function Navigation(): JSX.Element {
             <Button variant="link">Home</Button>
           </Box>
           <Box>
+            <Button variant="link">Shop</Button>
+          </Box>
+          <Box>
+            <Button variant="link">New Arivals</Button>
+          </Box>
+          <Box>
+            <Button variant="link">Popular</Button>
+          </Box>
+          {/* <Box>
             <Menu>
               <MenuButton as={Button}>Store</MenuButton>
               <MenuList alignItems="center">
@@ -87,7 +93,7 @@ function Navigation(): JSX.Element {
                 <MenuItem>Tops</MenuItem>
               </MenuList>
             </Menu>
-          </Box>
+          </Box> */}
           <Box>
             <Icon as={AiOutlineShopping} fontSize="40px" />
           </Box>
@@ -99,52 +105,79 @@ function Navigation(): JSX.Element {
 
 function Hero(): JSX.Element {
   return (
-    <Stack>
-      <Container px={[0, 0, 4]}>
-        <Box position="relative" textAlign="center" width="full">
-          <Image
-            mt="20"
-            width="full"
-            height="calc(100vh - 7rem)"
-            rounded="sm"
-            src="https://static.wixstatic.com/media/9c608a_840cc8e97e8d4daf9451008b877d746b~mv2_d_5018_2563_s_4_2.jpg/v1/fill/w_3264,h_1718,al_c,q_90,usm_0.66_1.00_0.01/9c608a_840cc8e97e8d4daf9451008b877d746b~mv2_d_5018_2563_s_4_2.webp"
-            objectFit="cover"
-          />
-          <Box position="absolute" top="50%" left="50%" transform="translate(-50%, -50%)">
-            <Text color="white" fontSize={['5xl', '7xl']} fontWeight="black" lineHeight={['normal', 'none']} mb="12">
-              New Outerwear Collection
-            </Text>
-            <Box textAlign="center">
-              <Button
-                px="10"
-                borderWidth="3px"
-                borderColor="white"
-                rounded="full"
-                variant="outline"
-                bg="transparent"
-                size="lg"
-                fontSize="lg"
-                textTransform="capitalize"
-                color="white"
-                _hover={{ color: 'white', bg: 'yellow.700', borderColor: 'yellow.700' }}
-                fontWeight="medium"
-              >
-                shop now
-              </Button>
-            </Box>
-          </Box>
-        </Box>
+
+    <Stack height='100vh' bg='gray.100' pt='20'>
+     <Container px={[0, 0, 4]} isInline >
+
+       <Stack flex='1'>
+       <Stack my='auto'>
+
+       <Text maxWidth='80%' lineHeight='8rem' fontSize={['6xl', '6.5rem']} fontWeight='bold'>Select Your New Perfect Style</Text>
+       </Stack>
+       </Stack>
+
+
+<Box
+      ml='auto'
+
+>
+      <Image
+      height='full'
+      width='350px'
+      objectFit='cover'
+         src="https://preview.colorlib.com/theme/timezone/assets/img/hero/xwatch.png.pagespeed.ic.LlRtijfV2T.webp"
+      />
+</Box>
+
       </Container>
     </Stack>
+
+    // <Stack>
+    //   <Container px={[0, 0, 4]}>
+    //     <Box position="relative" textAlign="center" width="full">
+    //       {/* <Image
+    //         mt="20"
+    //         width="full"
+    //         height="calc(100vh - 7rem)"
+    //         rounded="sm"
+    //         src="https://preview.colorlib.com/theme/timezone/assets/img/hero/xwatch.png.pagespeed.ic.LlRtijfV2T.webp"
+    //         objectFit="cover"
+    //       /> */}
+    //       <Box position="absolute" top="50%" left="50%" transform="translate(-50%, -50%)">
+    //         <Text color="white" fontSize={['5xl', '7xl']} fontWeight="black" lineHeight={['normal', 'none']} mb="12">
+    //           New Outerwear Collection
+    //         </Text>
+    //         <Box textAlign="center">
+    //           <Button
+    //             px="10"
+    //             borderWidth="3px"
+    //             borderColor="white"
+    //             rounded="full"
+    //             variant="outline"
+    //             bg="transparent"
+    //             size="lg"
+    //             fontSize="lg"
+    //             textTransform="capitalize"
+    //             color="white"
+    //             _hover={{ color: 'white', bg: 'yellow.700', borderColor: 'yellow.700' }}
+    //             fontWeight="medium"
+    //           >
+    //             shop now
+    //           </Button>
+    //         </Box>
+    //       </Box>
+    //     </Box>
+    //   </Container>
+    // </Stack>
   )
 }
 
 function FeaturedProducts(): JSX.Element {
   const products = [
-    { id: 1, src: '/tops-3.jpg', title: 'top', price: '$129.99' },
-    { id: 2, src: '/shoes-3.jpg', title: 'shoes', price: '$100.00' },
-    { id: 3, src: '/bag-3.jpg', title: 'bag', price: '$69.99' },
-    { id: 3, src: '/shoes-2.jpg', title: 'shoes', price: '$149.99' },
+    { id: 1, src: 'https://preview.colorlib.com/theme/timezone/assets/img/gallery/xnew_product1.png.pagespeed.ic.GC30TWVUh9.webp', title: 'top', price: '$129.99' },
+    { id: 2, src: 'https://preview.colorlib.com/theme/timezone/assets/img/gallery/new_product2.png', title: 'shoes', price: '$100.00' },
+    { id: 3, src: 'https://preview.colorlib.com/theme/timezone/assets/img/gallery/xgallery1.png.pagespeed.ic.RiMoEHAQJU.webp', title: 'bag', price: '$69.99' },
+    { id: 3, src: 'https://preview.colorlib.com/theme/timezone/assets/img/gallery/gallery2.png', title: 'shoes', price: '$149.99' },
   ]
 
   return (
@@ -152,7 +185,7 @@ function FeaturedProducts(): JSX.Element {
       <Container px={[0, 4]}>
         <Box>
           <Text textAlign="center" textTransform="uppercase" fontSize="xl" fontWeight="medium" letterSpacing="wider">
-            featured products
+            New Arrivals
           </Text>
         </Box>
         <Grid py="20" gridTemplateColumns="repeat(auto-fit, minmax(200px, 1fr))" gap={[10, 32]}>
