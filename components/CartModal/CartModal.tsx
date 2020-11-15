@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, Button, Stack, Text, Drawer, DrawerBody, DrawerFooter, DrawerHeader, DrawerOverlay, DrawerContent, useDisclosure } from '@chakra-ui/react'
+import { Image, Box, Button, Stack, Text, Drawer, DrawerBody, DrawerFooter, DrawerHeader, DrawerOverlay, DrawerContent, useDisclosure } from '@chakra-ui/react'
 import { ChevronRightIcon } from '@chakra-ui/icons'
 import { useCart } from '../../useCart'
 import { CartWidget } from '../CartWidget/CartWidget'
@@ -9,15 +9,18 @@ export function CartModal(): JSX.Element {
   const btnRef = React.useRef()
   const { cartItems } = useCart()
 
+  const productsCount = [].concat(...Object.values(cartItems)).length
+
   React.useEffect(() => {
-    if (!cartItems.length) return
-    onOpen()
-  }, [cartItems.length, onOpen])
+    if (productsCount) onOpen()
+  }, [productsCount, onOpen])
+
+  console.log(Object.entries(cartItems))
 
   return (
     <>
       <CartWidget onClick={onOpen} />
-      <Drawer blockScrollOnMount={false} isOpen={isOpen} placement="right" onClose={onClose} finalFocusRef={btnRef}>
+      <Drawer size="sm" blockScrollOnMount={false} isOpen={isOpen} placement="right" onClose={onClose} finalFocusRef={btnRef}>
         <DrawerOverlay>
           <DrawerContent>
             <DrawerHeader
@@ -25,7 +28,7 @@ export function CartModal(): JSX.Element {
               display="flex"
               alignItems="center"
               justifyContent="space-between"
-              py="6"
+              py="7"
               bg="gray.900"
               color="white"
               fontSize="2xl"
@@ -42,9 +45,11 @@ export function CartModal(): JSX.Element {
               <Box width="10" />
             </DrawerHeader>
 
-            <DrawerBody display="flex" flexDir="column">
-              <Stack flex="1">
-                <Text>items</Text>
+            <DrawerBody display="flex" flexDir="column" py="3">
+              <Stack flex="1" spacing="3">
+                {Object.entries(cartItems).map(([key, value]) => {
+                  return <Image objectFit="cover" height="24" width="24" key={key} src={value[0].src} />
+                })}
               </Stack>
               <Stack spacing={0} py={10} fontSize="2xl" fontWeight="medium">
                 <Text>Total</Text>
