@@ -1,4 +1,4 @@
-import { Stack } from '@chakra-ui/core'
+import { Stack } from '@chakra-ui/react'
 import Head from 'next/head'
 import { Navigation } from './Navigation'
 import { Footer } from './Footer'

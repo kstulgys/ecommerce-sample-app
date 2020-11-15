@@ -1,4 +1,4 @@
-import { Box, Button, Icon, Stack, Text, Grid, Image, VStack, HStack, Link } from '@chakra-ui/core'
+import { Box, Button } from '@chakra-ui/react'
 
 export function ViewMoreProductsButton(): JSX.Element {
   return (

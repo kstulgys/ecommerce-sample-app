@@ -1,6 +1,7 @@
-import { Box, Button, Icon, Stack, Text, Grid, Image, VStack, HStack, Link } from '@chakra-ui/core'
-import { AiOutlineShopping } from 'react-icons/ai'
+import React from 'react'
+import { Box, Button, Stack, HStack } from '@chakra-ui/react'
 import { Container } from './Container'
+import { CartModal } from './CartModal/CartModal'
 
 export function Navigation(): JSX.Element {
   return (
@@ -37,11 +38,9 @@ export function Navigation(): JSX.Element {
               </Button>
             </Box>
           </HStack>
-          <HStack>
-            <Box>
-              <Icon as={AiOutlineShopping} fontSize="32px" />
-            </Box>
-          </HStack>
+          <Stack height="full" justifyContent="center">
+            <CartModal />
+          </Stack>
         </Stack>
       </Container>
     </Stack>

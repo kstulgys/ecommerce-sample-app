@@ -1,4 +1,4 @@
-import { Stack } from '@chakra-ui/core'
+import { Stack } from '@chakra-ui/react'
 
 export function Container({ children, ...rest }): JSX.Element {
   return (

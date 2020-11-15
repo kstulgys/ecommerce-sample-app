@@ -1,4 +1,4 @@
-import { Box, Button, Icon, Stack, Text, Grid, Image, VStack, HStack, Link } from '@chakra-ui/core'
+import { Box, Stack, Text } from '@chakra-ui/react'
 import { Container } from './Container'
 
 export function Footer(): JSX.Element {

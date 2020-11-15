@@ -1,4 +1,4 @@
-import { Box, Button, Icon, Stack, Text, Grid, Image, VStack, HStack, Link } from '@chakra-ui/core'
+import { Icon, Stack, Text } from '@chakra-ui/react'
 import { FiRefreshCw, FiLock, FiUmbrella } from 'react-icons/fi'
 import { Container } from './Container'
 
