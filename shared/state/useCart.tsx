@@ -1,23 +1,20 @@
 import create from 'zustand'
+import { Book } from 'shared/types'
 
-interface Product {
-  id: string
-  src: string
-  price: string
-}
 interface CartItems {
-  [key: string]: { count: number; product: Product }
+  [key: string]: { count: number; product: Book }
 }
 
 type Store = {
   totalCount: number
   totalSum: number
   cartItems: CartItems
-  incProductCount: ({ productId, product }: { productId: string; product: Product }) => void
+  incProductCount: ({ productId, product }: { productId: string; product: Book }) => void
   decProductCount: (productId: string) => void
   addToCart: ({ productId: string, count: number, product: Product }) => void
   updateTotalSumAndCount: () => void
   overrideCartItemCount: ({ productId, count }: { productId: string; count: number }) => void
+  removeProduct: (productId: string) => void
 }
 
 export const useCart = create<Store>((set, get) => ({
@@ -74,6 +71,14 @@ export const useCart = create<Store>((set, get) => ({
     }
     updateTotalSumAndCount()
   },
+
+  removeProduct: (productId) => {
+    const { cartItems, updateTotalSumAndCount } = get()
+    delete cartItems[productId]
+    set({ cartItems })
+    updateTotalSumAndCount()
+  },
+
   overrideCartItemCount: ({ productId, count }) => {
     const { cartItems, updateTotalSumAndCount } = get()
     cartItems[productId].count = count

@@ -5,7 +5,7 @@ import { Footer } from './Footer'
 
 export function Layout({ children }): JSX.Element {
   return (
-    <Stack spacing={0} color="gray.900" fontFamily="Josefin Sans" pt="24" id="home">
+    <Stack spacing={0} color="gray.900" fontFamily="Josefin Sans" pt="20" id="home">
       <Head>
         <title>Nextjs ecommerce demo</title>
         <link rel="icon" href="/favicon.ico" />

@@ -1,15 +1,17 @@
 import React from 'react'
-import { Image, Box, Button, Stack, Text, Drawer, DrawerBody, DrawerFooter, DrawerHeader, DrawerOverlay, DrawerContent, useDisclosure } from '@chakra-ui/react'
+import { Box, Button, Stack, Text, Drawer, DrawerBody, DrawerFooter, DrawerHeader, DrawerOverlay, DrawerContent, useDisclosure } from '@chakra-ui/react'
 import { ChevronRightIcon } from '@chakra-ui/icons'
-import { useCart } from '../../useCart'
+import { useCart } from '../../shared/state/useCart'
 import { CartWidget } from '../CartWidget/CartWidget'
 import { PrimaryButton } from '../../shared/components'
-import { ItemCounter } from '../ItemCounter/ItemCounter'
+import { useRouter } from 'next/router'
+import { CartItem } from '../CartItem/CartItem'
 
 export function CartModal(): JSX.Element {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const btnRef = React.useRef()
   const { cartItems, totalSum, totalCount } = useCart()
+  const router = useRouter()
 
   React.useEffect(() => {
     if (totalCount) onOpen()
@@ -54,40 +56,12 @@ export function CartModal(): JSX.Element {
                     ${totalSum.toFixed(2)}
                   </Text>
                 </Stack>
-                <PrimaryButton onClick={onClose}>Checkout</PrimaryButton>
+                <PrimaryButton onClick={() => router.push('/checkout')}>Checkout</PrimaryButton>
               </Stack>
             </DrawerFooter>
           </DrawerContent>
         </DrawerOverlay>
       </Drawer>
     </>
-  )
-}
-
-function CartItem(props): JSX.Element {
-  const { count: currentCount, product } = props
-  const { src, id, price } = product
-  const { incProductCount, decProductCount, overrideCartItemCount } = useCart()
-
-  const handleInc = (): void => {
-    incProductCount({ productId: id, product })
-  }
-
-  const handleDec = (): void => {
-    if (currentCount === 1) return
-    decProductCount(id)
-  }
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    overrideCartItemCount({ productId: id, count: e.target.valueAsNumber })
-  }
-
-  return (
-    <Stack spacing={6} isInline alignItems="center" width="full">
-      <Box>
-        <Image rounded="sm" objectFit="cover" height="90px" width="full" src={src} mr="5" />
-      </Box>
-      <ItemCounter price={price} count={currentCount} onChange={handleChange} handleInc={handleInc} handleDec={handleDec} />
-    </Stack>
   )
 }

@@ -1,7 +1,7 @@
 import React from 'react'
 import { Button, Icon, Stack, Text, Box } from '@chakra-ui/react'
 import { AiOutlineShopping } from 'react-icons/ai'
-import { useCart } from '../../useCart'
+import { useCart } from '../../shared/state/useCart'
 
 export function CartWidget({ onClick }: any): JSX.Element {
   const { totalCount } = useCart()

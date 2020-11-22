@@ -1,6 +1,5 @@
 import React from 'react'
 import { CartModal } from './CartModal'
-
 import { render, screen, fireEvent } from '@testing-library/react'
 
 it('shows cart summary when cart icon is clicked', () => {

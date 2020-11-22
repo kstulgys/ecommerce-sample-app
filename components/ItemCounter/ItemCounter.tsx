@@ -6,7 +6,7 @@ interface ItemCounterProps {
   handleDec: (e) => void
   onChange: (e) => void
   count: number
-  price: string
+  price: number
 }
 
 export function ItemCounter(props: ItemCounterProps): JSX.Element {
@@ -25,7 +25,7 @@ export function ItemCounter(props: ItemCounterProps): JSX.Element {
   const value = valueEmpty ? '' : count
 
   return (
-    <Stack>
+    <Stack height="24" spacing={0} justifyContent="space-between">
       <Box>
         <Text lineHeight="none">Quantity</Text>
       </Box>
@@ -51,9 +51,9 @@ export function ItemCounter(props: ItemCounterProps): JSX.Element {
           </Button>
         </Stack>
       </Stack>
-      <Box overfllowX="auto">
+      <Box>
         <Text width="full" lineHeight="none">
-          ${(+price * count).toFixed(2)}
+          ${(price * count).toFixed(2)}
         </Text>
       </Box>
     </Stack>

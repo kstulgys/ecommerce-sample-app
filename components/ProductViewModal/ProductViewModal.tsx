@@ -1,11 +1,12 @@
 import React from 'react'
 import { Box, Stack, Text, Image, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, useDisclosure } from '@chakra-ui/react'
-import { useCart } from '../../useCart'
+import { useCart } from '../../shared/state/useCart'
 import { PrimaryButton } from '../../shared/components'
 import { ItemCounter } from '../ItemCounter/ItemCounter'
+import { Book } from 'shared/types'
 
-export function ProductViewModal(props): JSX.Element {
-  const { id, src, price } = props
+export function ProductViewModal(props: Book): JSX.Element {
+  const { isbn, price, title, description } = props
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { addToCart } = useCart()
   const [count, setCount] = React.useState<number>(1)
@@ -27,7 +28,7 @@ export function ProductViewModal(props): JSX.Element {
   React.useEffect(rerender, [isOpen])
 
   const handleAddToCart = (): void => {
-    addToCart({ productId: id, count, product: props })
+    addToCart({ productId: isbn, count, product: props })
     setCount(1)
     onClose()
   }
@@ -58,18 +59,17 @@ export function ProductViewModal(props): JSX.Element {
           <ModalCloseButton />
           <ModalBody pb="6" pt="1" fontFamily="Josefin Sans">
             <Stack isInline spacing={6}>
-              <Box height="full" width="50%">
-                <Image src={src} width="full" height="400px" objectFit="cover" />
+              <Box maxH="md" height="full" width="50%">
+                <Image maxH="md" src={`http://covers.openlibrary.org/b/ISBN/${isbn}-L.jpg`} width="full" height="full" objectFit="cover" />
               </Box>
               <Stack width="50%">
                 <Box flex="1">
-                  <Text>
-                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry&apos;s standard dummy text ever
-                    since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five
-                    centuries, but also the leap into electronic typesetting, remaining essentially unchanged.
+                  <Text mb="2" fontWeight="bold">
+                    {title}
                   </Text>
+                  <Text>{description}</Text>
                 </Box>
-                <Box mb="2">
+                <Box py="2">
                   <ItemCounter price={price} onChange={handleChange} handleInc={handleInc} handleDec={handleDec} count={count} />
                 </Box>
                 <Box>
