@@ -1,7 +1,7 @@
 import { Stack } from '@chakra-ui/react'
 import Head from 'next/head'
 import { Navigation } from './Navigation'
-import { Footer } from './Footer'
+// import { Footer } from './Footer'
 
 export function Layout({ children }): JSX.Element {
   return (
@@ -16,7 +16,7 @@ export function Layout({ children }): JSX.Element {
       <Stack as="main" spacing={0}>
         {children}
       </Stack>
-      <Footer />
+      {/* <Footer /> */}
       <style jsx global>{`
         html {
           scroll-behavior: smooth;
