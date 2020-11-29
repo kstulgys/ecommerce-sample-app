@@ -6,12 +6,30 @@ import { Image, Stack, Text, Box, Button, Grid, Badge, Spinner, Icon, Divider } 
 import { useQuery } from 'react-query'
 import Head from 'next/head'
 import faker from 'faker'
-import { useOrder, selectCategory, addToCart } from 'shared/state/useOrder'
-
+import { useOrder, selectCategory } from 'shared/state/useOrder'
+import { MenuItem } from 'shared/types'
 import { FiClock, FiMapPin, FiMessageSquare } from 'react-icons/fi'
+import { CartProvider, useCart } from 'shared/context/cart'
 
 const getRandomPrice = () => faker.finance.amount(10, 20)
 const getRandomWeight = () => faker.finance.amount(100, 500, 0)
+
+interface ResponseItem {
+  strMealThumb: string
+  strMeal: string
+  idMeal: number
+}
+
+function transformResponse(response: ResponseItem): MenuItem {
+  const { strMealThumb, strMeal, idMeal } = response
+  return {
+    weight: getRandomWeight(),
+    price: getRandomPrice(),
+    name: strMeal,
+    id: idMeal,
+    imageUrl: strMealThumb,
+  }
+}
 
 async function getTopMeals() {
   const promises = Array(10)
@@ -23,15 +41,7 @@ async function getTopMeals() {
       return meals[0]
     })
 
-  return Promise.all(
-    promises.map(async (p) => {
-      return await p.then((data) => ({
-        weight: getRandomWeight(),
-        price: getRandomPrice(),
-        ...data,
-      }))
-    })
-  )
+  return Promise.all(promises.map(async (p) => transformResponse(await p)))
 }
 
 async function getCategoryMeals(category) {
@@ -39,11 +49,7 @@ async function getCategoryMeals(category) {
     data: { meals = [] },
   } = await axios.get(`https://www.themealdb.com/api/json/v1/1/filter.php?c=${category}`)
 
-  return meals.map((meal) => ({
-    weight: getRandomWeight(),
-    price: getRandomPrice(),
-    ...meal,
-  }))
+  return meals.map(transformResponse)
 }
 
 async function getMeals(category) {
@@ -54,7 +60,7 @@ async function getMeals(category) {
 }
 
 const categories = [
-  { id: 14, name: 'Top' },
+  { name: 'Top', id: 14 },
   { name: 'Beef', id: 0 },
   { name: 'Breakfast', id: 1 },
   { name: 'Chicken', id: 2 },
@@ -70,27 +76,25 @@ const categories = [
   { name: 'Vegan', id: 12 },
   { name: 'Vegetarian', id: 13 },
 ]
-// interface HomeProps {
-//   books: Book[]
-// }
 
 export default function Home(): JSX.Element {
   return (
     <Layout>
       <Navigation />
-      <Meals />
-      <Order />
+      <CartProvider>
+        <Meals />
+        <Order />
+      </CartProvider>
     </Layout>
   )
 }
 
 function Navigation() {
-  const [menuItem, setMenuItem] = React.useState('menu')
-  console.log({ setMenuItem })
+  const [menuItem] = React.useState('menu')
 
   return (
     <Stack spacing="0" py="40" width="15%" bg="gray.900" pl="8">
-      {['overview', 'menu', 'transactions', 'testimonials', 'faq'].map((link) => {
+      {['menu', 'orders', 'faq'].map((link) => {
         const isActive = link === menuItem
 
         return (
@@ -169,7 +173,8 @@ function Meals() {
 }
 
 function Order() {
-  const state = useOrder()
+  const { cartItems, total } = useCart()
+  console.log({ total })
   return (
     <Stack spacing={8} justifyContent="space-between" bg="white" width="25%" boxShadow="base" py="10" pb="8" px="8">
       <Text fontSize="3xl" fontWeight="semibold">
@@ -178,29 +183,39 @@ function Order() {
       <OrderDetails />
       <Divider borderColor="gray.300" />
       <Stack spacing={6} flex="1" overflowY="auto">
-        {state.cartItems.map(({ product, subtotal, weight }) => {
-          const { strMealThumb, strMeal, idMeal } = product
-
+        {cartItems.map((product) => {
+          const { imageUrl, name, id, subTotal, subWeight } = product
           return (
-            <Stack spacing={6} isInline key={idMeal} alignItems="center">
+            <Stack spacing={6} isInline key={id} alignItems="center">
               <Box width="25%">
-                <Image rounded="md" boxShadow="base" height="20" width="20" src={strMealThumb} />
+                <Image rounded="md" boxShadow="base" height="20" width="20" src={imageUrl} />
               </Box>
               <Box fontSize="sm" width="30%">
-                <Text isTruncated>{strMeal}</Text>
-                <Text>{weight} g</Text>
+                <Text isTruncated>{name}</Text>
+                <Text>{subWeight} g</Text>
               </Box>
               <Box width="25%">
-                <Counter />
+                <Counter {...product} />
               </Box>
               <Box width="20%" fontSize="sm">
-                <Text>€ {subtotal.toFixed(2)}</Text>
+                <Text>€{subTotal.toFixed(2)}</Text>
               </Box>
             </Stack>
           )
         })}
       </Stack>
       <Box>
+        {!!total && (
+          <Stack fontSize="lg" mb="8" isInline justifyContent="space-between" alignItems="center">
+            <Text>Total</Text>
+            <Stack isInline alignItems="center">
+              <Badge fontSize="md" fontWeight="medium" variant="subtle" colorScheme="gray" rounded="full" px="2" textTransform="lowercase" color="gray.600">
+                2300g
+              </Badge>
+              <Text fontWeight="semibold">€{total}</Text>
+            </Stack>
+          </Stack>
+        )}
         <Button color="white" bg="gray.900" width="full" height="16">
           Checkout
         </Button>
@@ -240,7 +255,10 @@ function OrderDetails() {
   )
 }
 
-function Counter() {
+function Counter(props) {
+  const { id, count } = props
+  const { addToCart, removeOneItem } = useCart()
+
   return (
     <Stack fontWeight="medium" isInline alignItems="center">
       <Button
@@ -255,11 +273,12 @@ function Counter() {
           bg: 'gray.900',
           color: 'white',
         }}
+        onClick={() => removeOneItem(id)}
       >
         -
       </Button>
       <Box>
-        <Text fontSize="sm">2</Text>
+        <Text fontSize="sm">{count}</Text>
       </Box>
       <Button
         variant="unstyled"
@@ -273,6 +292,7 @@ function Counter() {
           bg: 'gray.900',
           color: 'white',
         }}
+        onClick={() => addToCart(props)}
       >
         +
       </Button>
@@ -308,6 +328,7 @@ function CategoryMeals() {
   const { isLoading, data: meals } = useQuery([category, category], getMeals, {
     staleTime: Infinity,
   })
+  const { addToCart } = useCart()
 
   if (isLoading)
     return (
@@ -315,53 +336,33 @@ function CategoryMeals() {
         <Spinner mx="auto" mt="20" />
       </Stack>
     )
-  console.log({ meals })
 
   return (
     <Stack>
-      {/* <Text fontSize="3xl" fontWeight="bold">
-        {state.category}
-      </Text> */}
       <Grid pt="16" gridTemplateColumns="repeat(auto-fill, minmax(240px, 1fr))" gap={8}>
         {meals.map((product) => {
-          const { strMealThumb, price, weight, strMeal } = product
+          const { imageUrl, price, weight, name, id } = product
           return (
-            <Stack
-              key={strMealThumb}
-              cursor="pointer"
-              role="group"
-              spacing={3}
-              boxShadow="base"
-              bg="white"
-              rounded="2xl"
-              p="3"
-              position="relative"
-              overflow="hidden"
-            >
-              <Image width="full" height="40" rounded="xl" src={strMealThumb} objectFit="cover" />
+            <Stack key={id} cursor="pointer" role="group" spacing={3} boxShadow="base" bg="white" rounded="2xl" p="3" position="relative" overflow="hidden">
+              <Image width="full" height="40" rounded="xl" src={imageUrl} objectFit="cover" />
               <Box>
                 <Text isTruncated fontSize="md" lineHeight="none" fontWeight="semibold">
-                  {strMeal}
+                  {name}
                 </Text>
               </Box>
               <Stack isInline justifyContent="space-between" alignItems="center" fontSize="sm" fontWeight="medium">
                 <Box>
-                  <Text color="gray.600">€ {price}</Text>
+                  <Text color="gray.600">€{price}</Text>
                 </Box>
 
                 <Badge fontSize="sm" variant="subtle" colorScheme="gray" rounded="full" px="2" textTransform="lowercase" color="gray.600">
-                  {weight} g
+                  {weight}g
                 </Badge>
               </Stack>
-
-              <Button
-                boxShadow="base"
-                height="16"
+              <Box
                 width="full"
-                bg="gray.900"
-                color="white"
                 position="absolute"
-                rounded="2xl"
+                boxShadow="base"
                 bottom={0}
                 left={0}
                 opacity={0}
@@ -371,13 +372,23 @@ function CategoryMeals() {
                   transform: 'translateY(0)',
                   transition: 'all .3s ease-in-out',
                 }}
-                _hover={{
-                  bg: 'gray.800',
-                }}
-                onClick={() => addToCart({ product })}
               >
-                add to cart
-              </Button>
+                <Button
+                  rounded="2xl"
+                  width="full"
+                  boxShadow="base"
+                  height="16"
+                  bg="gray.900"
+                  color="white"
+                  _hover={{
+                    bg: 'gray.800',
+                  }}
+                  onClick={() => addToCart(product)}
+                  textTransform="capitalize"
+                >
+                  add to cart
+                </Button>
+              </Box>
             </Stack>
           )
         })}

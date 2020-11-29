@@ -39,5 +39,5 @@ export function removeOneItem(productId): void {
 export function removeItemFromCart(productId: string | number): void {
   const cartItem = state.cartItems.find((item) => item.product.idMeal === productId)
   state.cartItems = state.cartItems.filter((item) => item.product.idMeal !== productId)
-  state.total -= cartItem.subtotal
+  state.total -= cartItem.subTotal
 }
